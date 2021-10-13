@@ -74,9 +74,40 @@ public class ServicioRecurso {
             dto.setCantidadPrestada(dto.getCantidadPrestada()+1);
             dto.setFechaPrestamo(LocalDate.now());
             actualizar(dto);
-            return "El recusrso " + dto.getNombreRecurso() + "se encuentra prestado";
+            return "El recurso " + dto.getNombreRecurso() + "se encuentra prestado";
         }
         return "En estos momentos no hay unidades disponibles del recurso " + dto.getNombreRecurso();
+    }
+
+    public List<RecursoDTO> recomendarPorTema(String tema){
+        List<RecursoDTO> recursoDTOS = new ArrayList<>();
+        repository.findByTematicaRecurso(tema).forEach(recurso -> recursoDTOS.add(mapper.convertToDTO(recurso)));
+        return recursoDTOS;
+    }
+
+    public List<RecursoDTO> recomendarPorTipo(String tipo){
+        List<RecursoDTO> recursoDTOS = new ArrayList<>();
+        repository.findByTipoRecurso(tipo).forEach(recurso -> recursoDTOS.add(mapper.convertToDTO(recurso)));
+        return recursoDTOS;
+    }
+
+    public List<RecursoDTO> recomendarPorTemaYTipo(String tema, String tipo){
+        List<RecursoDTO> recursoDTOS = new ArrayList<>();
+        List<RecursoDTO> recursoDTOS1 = new ArrayList<>();
+        recursoDTOS1.addAll(recomendarPorTipo(tipo));
+        recursoDTOS1.addAll(recomendarPorTema(tema));
+        recursoDTOS1.stream().distinct().forEach(recursoDTO -> recursoDTOS.add(recursoDTO));
+        return recursoDTOS;
+    }
+
+    public  String regresarRecurso(String id){
+        RecursoDTO dto = obtenerPorId(id);
+        if (dto.getCantidadPrestada() > 0){
+            dto.setCantidadPrestada(dto.getCantidadPrestada() - 1);
+            actualizar(dto);
+            return "Se ha regresado el recurso " + dto.getNombreRecurso();
+        }
+        return "El recurso " + dto.getNombreRecurso() + " no se encuentra prestado";
     }
 
 
