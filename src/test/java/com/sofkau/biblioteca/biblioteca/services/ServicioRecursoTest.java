@@ -37,7 +37,7 @@ class ServicioRecursoTest {
         Mockito.when(repository.findAll()).thenReturn(recursos());
         var result = servicioRecurso.obtenerTodos();
         Assertions.assertEquals(2, result.size());
-        Assertions.assertEquals("l20", result.get(0).getId());
+        Assertions.assertEquals("l55", result.get(0).getId());
         Assertions.assertEquals("50 sombras", result.get(0).getNombreRecurso());
         Assertions.assertEquals(2, result.get(0).getCantidadDisponible());
         Assertions.assertEquals(null, result.get(0).getFechaPrestamo());
@@ -56,7 +56,7 @@ class ServicioRecursoTest {
     private List<Recurso> recursos() {
 
         var primerRecurso = new Recurso();
-        primerRecurso.setId("l20");
+        primerRecurso.setId("l55");
         primerRecurso.setNombreRecurso("50 sombras");
         primerRecurso.setCantidadDisponible(2);
         primerRecurso.setFechaPrestamo(null);
@@ -117,6 +117,74 @@ class ServicioRecursoTest {
         Assertions.assertEquals("Libro", result.getTipoRecurso(), "El tipo de recurso debe ser igual");
         Assertions.assertEquals("terror", result.getTematicaRecurso(), "La tematica debe ser igual");
     }
+
+    @Test
+    @DisplayName("Editar un recurso")
+    void actualizar(){
+        var primerRecurso=new RecursoDTO();
+        primerRecurso.setId("l55");
+        primerRecurso.setNombreRecurso("50 sombras");
+        primerRecurso.setCantidadDisponible(2);
+        primerRecurso.setFechaPrestamo(LocalDate.now());
+        primerRecurso.setCantidadPrestada(0);
+        primerRecurso.setTipoRecurso("Libro");
+        primerRecurso.setTematicaRecurso("terror");
+
+        Mockito.when(repository.save(Mockito.any())).thenReturn(recursoMapper.convertToDocument(primerRecurso));
+        Mockito.when(repository.findById(primerRecurso.getId())).thenReturn(recursos().stream().findFirst());
+        var result =servicioRecurso.actualizar(primerRecurso);
+
+        Assertions.assertNotNull(result, "Debe ingresar dato");
+
+        Assertions.assertEquals("l55", result.getId(),"El id no corresponde");
+        Assertions.assertEquals("50 sombras", result.getNombreRecurso(), "Debe ser igual el nombre");
+        Assertions.assertEquals(2, result.getCantidadDisponible(), "La cantidad disponible debe ser igual");
+        Assertions.assertEquals(LocalDate.now(), result.getFechaPrestamo(), "La fecha debe ser nula");
+        Assertions.assertEquals(0, result.getCantidadPrestada(), "La cantidad prestada no corresponde");
+        Assertions.assertEquals("Libro", result.getTipoRecurso(), "El tipo de recurso debe ser igual");
+        Assertions.assertEquals("terror", result.getTematicaRecurso(), "La tematica debe ser igual");
+    }
+
+
+    @Test
+    @DisplayName("Disponibilidad de recurso")
+    void cerificarDisponibilidadRecurso(){
+        var primerRecurso=new RecursoDTO();
+        primerRecurso.setId("l55");
+        primerRecurso.setNombreRecurso("50 sombras");
+        primerRecurso.setCantidadDisponible(2);
+        primerRecurso.setFechaPrestamo(LocalDate.now());
+        primerRecurso.setCantidadPrestada(0);
+        primerRecurso.setTipoRecurso("Libro");
+        primerRecurso.setTematicaRecurso("terror");
+
+        Mockito.when(repository.findById(primerRecurso.getId())).thenReturn(recursos().stream().findFirst());
+
+        var result = servicioRecurso.comprobarDisponibilidad(primerRecurso.getId());
+
+        Assertions.assertEquals("El recurso " + recursos().stream().findFirst().get().getNombreRecurso() + "esta disponible y hay " + (recursos().stream().findFirst().get().getCantidadDisponible() - recursos().stream().findFirst().get().getCantidadPrestada()) + " unidades disponibles", result);
+    }
+
+
+    @Test
+    @DisplayName("prestar de recurso")
+    void prestarRecurso(){
+        var primerRecurso=new RecursoDTO();
+        primerRecurso.setId("l55");
+        primerRecurso.setNombreRecurso("50 sombras");
+        primerRecurso.setCantidadDisponible(2);
+        primerRecurso.setFechaPrestamo(LocalDate.now());
+        primerRecurso.setCantidadPrestada(0);
+        primerRecurso.setTipoRecurso("Libro");
+        primerRecurso.setTematicaRecurso("terror");
+        Mockito.when(repository.findById(primerRecurso.getId())).thenReturn(recursos().stream().findFirst());
+        Mockito.when(repository.save(Mockito.any())).thenReturn(recursoMapper.convertToDocument(primerRecurso));
+
+        var result = servicioRecurso.prestar(primerRecurso.getId());
+
+        Assertions.assertEquals("El recurso " + primerRecurso.getNombreRecurso() + " se ha prestado", result);
+    }
+
 
 
 

@@ -74,7 +74,7 @@ public class ServicioRecurso {
             dto.setCantidadPrestada(dto.getCantidadPrestada()+1);
             dto.setFechaPrestamo(LocalDate.now());
             actualizar(dto);
-            return "El recurso " + dto.getNombreRecurso() + "se encuentra prestado";
+            return "El recurso " + dto.getNombreRecurso() + " se ha prestado";
         }
         return "En estos momentos no hay unidades disponibles del recurso " + dto.getNombreRecurso();
     }
