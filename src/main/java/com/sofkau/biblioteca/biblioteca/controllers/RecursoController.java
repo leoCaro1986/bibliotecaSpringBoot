@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping
+@RequestMapping("recursos")
 public class RecursoController {
-
     Logger logger = LoggerFactory.getLogger(RecursoController.class);
     private ServicioRecurso servicioRecurso;
 
@@ -23,7 +22,7 @@ public class RecursoController {
         this.servicioRecurso=servicioRecurso;
     }
 
-    @PostMapping("recursos/agregar")
+    @PostMapping(value = "/agregar")
     public ResponseEntity<RecursoDTO> add(@RequestBody RecursoDTO recursoDTO){
         return ResponseEntity.accepted().body(servicioRecurso.guardar(recursoDTO));
         //return new ResponseEntity(servicioRecurso.guardar(recursoDTO), HttpStatus.CREATED);

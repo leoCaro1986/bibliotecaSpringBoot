@@ -13,7 +13,7 @@ public class RecursoDTO {
     private String id;
     private String nombreRecurso;
     private String tematicaRecurso;
-    private String tipoRacurso;
+    private String tipoRecurso;
     private LocalDate fechaPrestamo;
     private Integer cantidadDisponible;
     private Integer cantidadPrestada;

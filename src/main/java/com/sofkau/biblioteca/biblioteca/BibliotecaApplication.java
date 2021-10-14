@@ -7,11 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("src/main/java/com/sofkau/biblioteca/biblioteca")
+@ComponentScan
 public class BibliotecaApplication {
 
 
-
+	@Bean
+	public ModelMapper modelMapper(){return new ModelMapper();}
 	public static void main(String[] args) {
 		SpringApplication.run(BibliotecaApplication.class, args);
 	}
